@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Tomcat 8.5 配置 Https SSL 证书为什么要写本文在对接微信小程序时，域名需要https才行，用的百度的服务器，jks格式的证书，然而按照百度官网给的教程Tomcat服务器安装SSL证书 ,并没有成功，自己对Tomcat配置文件也不熟悉，网上的教程找了半天，才发现问题所在。踩的坑记录下来，害怕时间久了，就又忘记了… 配置环境介绍 window server 2019 Tomcat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tomcat 8.5 配置Https SSL证书">
+<meta property="og:url" content="https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/index.html">
+<meta property="og:site_name" content="PFG&#39;Blog">
+<meta property="og:description" content="Tomcat 8.5 配置 Https SSL 证书为什么要写本文在对接微信小程序时，域名需要https才行，用的百度的服务器，jks格式的证书，然而按照百度官网给的教程Tomcat服务器安装SSL证书 ,并没有成功，自己对Tomcat配置文件也不熟悉，网上的教程找了半天，才发现问题所在。踩的坑记录下来，害怕时间久了，就又忘记了… 配置环境介绍 window server 2019 Tomcat">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-10T05:09:52.000Z">
+<meta property="article:modified_time" content="2022-08-10T10:25:27.636Z">
+<meta property="article:author" content="晓然">
+<meta property="article:tag" content="其他">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Tomcat 8.5 配置Https SSL证书</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/atom.xml" title="PFG&#39;Blog" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/%E5%8F%8B%E8%81%94/">友联</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://240924.xyz">项目</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/07/10/%E6%A0%91%E8%8E%93%E6%B4%BE4B%E5%AE%89%E8%A3%85%E5%AE%98%E7%BD%91-Raspbian-%E7%B3%BB%E7%BB%9F/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&text=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&title=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&is_video=false&description=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Tomcat 8.5 配置Https SSL证书&body=Check out this article: https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&title=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&title=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&title=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&title=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&name=Tomcat 8.5 配置Https SSL证书&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&t=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Tomcat-8-5-%E9%85%8D%E7%BD%AE-Https-SSL-%E8%AF%81%E4%B9%A6"><span class="toc-number">1.</span> <span class="toc-text">Tomcat 8.5 配置 Https SSL 证书</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%86%99%E6%9C%AC%E6%96%87"><span class="toc-number">1.1.</span> <span class="toc-text">为什么要写本文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.</span> <span class="toc-text">配置环境介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEhttp-ssl"><span class="toc-number">1.3.</span> <span class="toc-text">配置http ssl</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%90%AFHTTP%E5%BC%BA%E5%88%B6%E8%B7%B3%E8%BD%ACHTTPS"><span class="toc-number">1.4.</span> <span class="toc-text">开启HTTP强制跳转HTTPS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-number">1.5.</span> <span class="toc-text">结语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">1.6.</span> <span class="toc-text">参考链接</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Tomcat 8.5 配置Https SSL证书
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">晓然</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-06-10T05:09:52.000Z" itemprop="datePublished">2022-06-10</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="Tomcat-8-5-配置-Https-SSL-证书"><a href="#Tomcat-8-5-配置-Https-SSL-证书" class="headerlink" title="Tomcat 8.5 配置 Https SSL 证书"></a>Tomcat 8.5 配置 Https SSL 证书</h1><h2 id="为什么要写本文"><a href="#为什么要写本文" class="headerlink" title="为什么要写本文"></a>为什么要写本文</h2><p>在对接微信小程序时，域名需要https才行，用的百度的服务器，jks格式的证书，然而按照百度官网给的教程<a target="_blank" rel="noopener" href="https://cloud.baidu.com/doc/CAS/s/Akbj7hcxb">Tomcat服务器安装SSL证书 </a>,并没有成功，自己对Tomcat配置文件也不熟悉，网上的教程找了半天，才发现问题所在。踩的坑记录下来，害怕时间久了，就又忘记了…</p>
+<h2 id="配置环境介绍"><a href="#配置环境介绍" class="headerlink" title="配置环境介绍"></a>配置环境介绍</h2><ul>
+<li>window server 2019</li>
+<li>Tomcat 8.5</li>
+<li>jks格式证书(证书位置/…/tomcat/cert/domain.jks)</li>
+<li>已安装openssl</li>
+<li>已打开443/80端口</li>
+</ul>
+<h2 id="配置http-ssl"><a href="#配置http-ssl" class="headerlink" title="配置http ssl"></a>配置http ssl</h2><p><strong>修改配置文件server.xml</strong></p>
+<ol>
+<li>访问域名时，不再添加端口，便修改下列端口，将<code>8080</code>改为<code>80</code>，<code>8443</code>改为<code>443</code></li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">&quot;8080&quot;</span> <span class="attr">protocol</span>=<span class="string">&quot;HTTP/1.1&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">connectionTimeout</span>=<span class="string">&quot;20000&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">redirectPort</span>=<span class="string">&quot;8443&quot;</span> <span class="attr">URIEncoding</span>=<span class="string">&quot;UTF-8&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>配置jks证书相关;下面是百度官方文档的配置，自己在用时，访问htpps，网页就报错，删除了 <code>keystoreType=&quot;PKCS12&quot;</code>，然后就成功了…..</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">&quot;443&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">protocol</span>=<span class="string">&quot;HTTP/1.1&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">SSLEnabled</span>=<span class="string">&quot;true&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">scheme</span>=<span class="string">&quot;https&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">secure</span>=<span class="string">&quot;true&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">keystoreFile</span>=<span class="string">&quot;cert/domain.jks&quot;</span>  #<span class="attr">此处keystoreFile代表证书文件的路径</span>，<span class="attr">请用您证书的文件名替换domain</span>。</span></span><br><span class="line"><span class="tag">    <span class="attr">keystoreType</span>=<span class="string">&quot;PKCS12&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">keystorePass</span>=<span class="string">&quot;证书密码&quot;</span>   #<span class="attr">请用您证书密码文件中的密码替换</span>“<span class="attr">证书密码</span>”。</span></span><br><span class="line"><span class="tag">    <span class="attr">clientAuth</span>=<span class="string">&quot;false&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">SSLProtocol</span>=<span class="string">&quot;TLSv1+TLSv1.1+TLSv1.2&quot;</span> </span></span><br><span class="line"><span class="tag">    <span class="attr">ciphers</span>=<span class="string">&quot;TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><del>3. 配置监听443(是否有必要?),将下列端口8443,改为443</del></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">protocol</span>=<span class="string">&quot;AJP/1.3&quot;</span></span></span><br><span class="line"><span class="tag">           <span class="attr">address</span>=<span class="string">&quot;::1&quot;</span></span></span><br><span class="line"><span class="tag">           <span class="attr">port</span>=<span class="string">&quot;8009&quot;</span></span></span><br><span class="line"><span class="tag">           <span class="attr">redirectPort</span>=<span class="string">&quot;8443&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>修改后的server.xml的文件，大致是这样的</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">&quot;80&quot;</span> <span class="attr">protocol</span>=<span class="string">&quot;HTTP/1.1&quot;</span></span></span><br><span class="line"><span class="tag">           <span class="attr">connectionTimeout</span>=<span class="string">&quot;20000&quot;</span></span></span><br><span class="line"><span class="tag">           <span class="attr">redirectPort</span>=<span class="string">&quot;443&quot;</span> <span class="attr">URIEncoding</span>=<span class="string">&quot;UTF-8&quot;</span>/&gt;</span></span><br><span class="line">....</span><br><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">&quot;443&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">protocol</span>=<span class="string">&quot;HTTP/1.1&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">SSLEnabled</span>=<span class="string">&quot;true&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">scheme</span>=<span class="string">&quot;https&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">secure</span>=<span class="string">&quot;true&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">keystoreFile</span>=<span class="string">&quot;cert/www.xxx.jks&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">keystorePass</span>=<span class="string">&quot;xxxxxxx&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">clientAuth</span>=<span class="string">&quot;false&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">SSLProtocol</span>=<span class="string">&quot;TLSv1+TLSv1.1+TLSv1.2&quot;</span>            </span></span><br><span class="line"><span class="tag">    <span class="attr">ciphers</span>=<span class="string">&quot;TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256&quot;</span>/&gt;</span></span><br><span class="line">....</span><br><span class="line"><span class="tag">&lt;/<span class="name">Server</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="开启HTTP强制跳转HTTPS"><a href="#开启HTTP强制跳转HTTPS" class="headerlink" title="开启HTTP强制跳转HTTPS"></a>开启HTTP强制跳转HTTPS</h2><p>修改配置web.xml文件，强制HTTP跳转HTTPS,这一步按照文档是没问题的，直接拿来用就行了</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#在<span class="tag">&lt;/<span class="name">welcome-file-list</span>&gt;</span>后添加以下内容：</span><br><span class="line"><span class="tag">&lt;<span class="name">login-config</span>&gt;</span>  </span><br><span class="line">    <span class="comment">&lt;!-- Authorization setting for SSL --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">auth-method</span>&gt;</span>CLIENT-CERT<span class="tag">&lt;/<span class="name">auth-method</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">realm-name</span>&gt;</span>Client Cert Users-only Area<span class="tag">&lt;/<span class="name">realm-name</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">login-config</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">security-constraint</span>&gt;</span>  </span><br><span class="line">    <span class="comment">&lt;!-- Authorization setting for SSL --&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">web-resource-collection</span> &gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">web-resource-name</span> &gt;</span>SSL<span class="tag">&lt;/<span class="name">web-resource-name</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;/<span class="name">web-resource-collection</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">user-data-constraint</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">transport-guarantee</span>&gt;</span>CONFIDENTIAL<span class="tag">&lt;/<span class="name">transport-guarantee</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;/<span class="name">user-data-constraint</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">security-constraint</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>在最开始搜索教程时，并没有加上关键字<code>jks</code>，导致走了一些弯路，由于不懂Tomcat，总以为文档时对的。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/hellxz/p/12150936.html">Tomcat从安装到配置Https SSL证书 - 东北小狐狸 - 博客园 (cnblogs.com)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/librarookie/p/16364384.html#%E9%85%8D%E7%BD%AEtomcat%E6%9C%8D%E5%8A%A1-http%E8%87%AA%E5%8A%A8%E8%B7%B3%E8%BD%AC%E5%88%B0-https%E6%8C%89%E9%9C%80%E9%80%89%E9%85%8D">Keytool配置 Tomcat的HTTPS双向认证 - Librarookie - 博客园 (cnblogs.com)</a></li>
+</ol>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/%E5%8F%8B%E8%81%94/">友联</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://240924.xyz">项目</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Tomcat-8-5-%E9%85%8D%E7%BD%AE-Https-SSL-%E8%AF%81%E4%B9%A6"><span class="toc-number">1.</span> <span class="toc-text">Tomcat 8.5 配置 Https SSL 证书</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%86%99%E6%9C%AC%E6%96%87"><span class="toc-number">1.1.</span> <span class="toc-text">为什么要写本文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.</span> <span class="toc-text">配置环境介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEhttp-ssl"><span class="toc-number">1.3.</span> <span class="toc-text">配置http ssl</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%90%AFHTTP%E5%BC%BA%E5%88%B6%E8%B7%B3%E8%BD%ACHTTPS"><span class="toc-number">1.4.</span> <span class="toc-text">开启HTTP强制跳转HTTPS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-number">1.5.</span> <span class="toc-text">结语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">1.6.</span> <span class="toc-text">参考链接</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&text=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&title=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&is_video=false&description=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Tomcat 8.5 配置Https SSL证书&body=Check out this article: https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&title=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&title=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&title=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&title=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&name=Tomcat 8.5 配置Https SSL证书&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://cjdll.com/2022/06/10/Tomcat-8-5-%E9%85%8D%E7%BD%AEHttps-SSL%E8%AF%81%E4%B9%A6/&t=Tomcat 8.5 配置Https SSL证书"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022
+    晓然
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/%E5%8F%8B%E8%81%94/">友联</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://240924.xyz">项目</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
