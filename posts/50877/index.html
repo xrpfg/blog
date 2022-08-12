@@ -6,17 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="一场关于现在和将来的旅行">
+    <meta name="description" content="前言最近将博客由halo换到了hexo，halo可能是所有动态博客中使用起来最方便的一个吧，俺选择hexo也仅仅是看上了cactus这款简洁主题，用来记录或者写作刚刚好。hexo的安装网上的教程很多，这里俺主要是想记录下使用cactus这款主题的过程中的一些配置或者相关优化。 环境信息123hexo: 5.4.2hexo-cli: 4.3.0os: linux 5.10.0-15-amd64 De">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hexo主题cactus配置">
 <meta property="og:url" content="https://cjdll.com/posts/50877/index.html">
 <meta property="og:site_name" content="PFG&#39;Blog">
-<meta property="og:description" content="一场关于现在和将来的旅行">
+<meta property="og:description" content="前言最近将博客由halo换到了hexo，halo可能是所有动态博客中使用起来最方便的一个吧，俺选择hexo也仅仅是看上了cactus这款简洁主题，用来记录或者写作刚刚好。hexo的安装网上的教程很多，这里俺主要是想记录下使用cactus这款主题的过程中的一些配置或者相关优化。 环境信息123hexo: 5.4.2hexo-cli: 4.3.0os: linux 5.10.0-15-amd64 De">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-08-12T08:45:04.000Z">
-<meta property="article:modified_time" content="2022-08-12T08:50:33.848Z">
+<meta property="article:modified_time" content="2022-08-12T18:41:46.080Z">
 <meta property="article:author" content="晓然">
-<meta property="article:tag" content="hexo,life,linux">
+<meta property="article:tag" content="hexo">
 <meta name="twitter:card" content="summary">
     
     
@@ -108,7 +108,7 @@
 
     </div>
     <div id="toc">
-      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E4%BF%A1%E6%81%AF"><span class="toc-number">2.</span> <span class="toc-text">环境信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cactus%E4%B8%BB%E9%A2%98%E5%AE%89%E8%A3%85"><span class="toc-number">3.</span> <span class="toc-text">cactus主题安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-number">4.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E9%93%BE%E6%8E%A5%E4%BC%98%E5%8C%96"><span class="toc-number">4.1.</span> <span class="toc-text">文章链接优化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E8%A6%81%E4%BB%8B%E7%BB%8D"><span class="toc-number">4.1.1.</span> <span class="toc-text">简要介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#abbrlink%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="toc-number">4.1.2.</span> <span class="toc-text">abbrlink插件安装与配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E4%B8%AD%E7%9A%84%E5%9B%BE%E7%89%87%E8%AE%BE%E7%BD%AE"><span class="toc-number">4.2.</span> <span class="toc-text">文章中的图片设置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5"><span class="toc-number">5.</span> <span class="toc-text">参考连接</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -141,13 +141,33 @@
       
 
       
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/hexo/" rel="tag">hexo</a>
+    </div>
+
 
     </div>
   </header>
   
 
   <div class="content" itemprop="articleBody">
-    
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近将博客由halo换到了hexo，halo可能是所有动态博客中使用起来最方便的一个吧，俺选择hexo也仅仅是看上了cactus这款简洁主题，用来记录或者写作刚刚好。hexo的安装网上的教程很多，这里俺主要是想记录下使用cactus这款主题的过程中的一些配置或者相关优化。</p>
+<h2 id="环境信息"><a href="#环境信息" class="headerlink" title="环境信息"></a>环境信息</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo: 5.4.2</span><br><span class="line">hexo-cli: 4.3.0</span><br><span class="line">os: linux 5.10.0-15-amd64 Debian GNU/Linux 11 (bullseye)</span><br></pre></td></tr></table></figure>
+<h2 id="cactus主题安装"><a href="#cactus主题安装" class="headerlink" title="cactus主题安装"></a>cactus主题安装</h2><p>准备和安装，主题文档说的比较明了，直接参考这个即可:<a target="_blank" rel="noopener" href="https://github.com/probberechts/hexo-theme-cactus#prerequisites">准备条件和安装</a></p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>关于主题的基本配置，官方文档也有，俺就简要记录下吧；首先要清除的是，关于主题配置文件的修改几乎都在<code>theme/cactus/_config.yml</code>文件中修改，关于hexo的全局设置在根目录下的<code>_config.yml</code>文件中，修改是要清除修改哪个文件。</p>
+<h3 id="文章链接优化"><a href="#文章链接优化" class="headerlink" title="文章链接优化"></a>文章链接优化</h3><h4 id="简要介绍"><a href="#简要介绍" class="headerlink" title="简要介绍"></a>简要介绍</h4><p>hexo文章链接的配置为<code>_config.yml</code>中的<code>permalink</code>属性，默认是<code>year/:month/:day/:title</code>，属性设置参考<a target="_blank" rel="noopener" href="https://hexo.io/docs/permalinks#Variables">hexo永久链接</a>。假如说文章的标题为<strong>hexo主题cactus配置</strong>，生成的文章连接是这样的<code>https://cjdll.com/2022/08/12/hexo主题cactus配置</code>,而当你把文章连接分享给别人的时候变成了这样<code>http://cjdll.com/2022/08/12/hexo%E4%B8%BB%E9%A2%98cactus%E9%85%8D%E7%BD%AE/</code>,后面的中文都进行了转义，看起来又臭又长的，不好看，但可以使用插件<a target="_blank" rel="noopener" href="https://github.com/Rozbo/hexo-abbrlink">Hexo-abbrlink</a>进行优化，最终文章的连接是这样的<a href="https://cjdll.com/posts/50877/">https://cjdll.com/posts/50877/</a></p>
+<h4 id="abbrlink插件安装与配置"><a href="#abbrlink插件安装与配置" class="headerlink" title="abbrlink插件安装与配置"></a>abbrlink插件安装与配置</h4><ol>
+<li>安装插件<br>在网站的根目录执行命令<code>npm install hexo-abbrlink --save</code></li>
+<li>在网站根目录的<code>_config.yml</code>配置文件中，修改<code>permalink</code>并添加<code>addrlink</code>配置，最终效果类似于这样<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">...</span></span><br><span class="line"><span class="attr">permalink:</span> <span class="string">posts/:abbrlink/</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="comment">#abbrlink</span></span><br><span class="line"><span class="attr">abbrlink:</span></span><br><span class="line">  <span class="attr">alg:</span> <span class="string">crc16</span> <span class="comment">#算法</span></span><br><span class="line">  <span class="attr">rep:</span> <span class="string">dec</span> <span class="comment">#进制</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li>官方例子,俺采用的是<code>crc16 &amp; dec</code><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">crc16</span> <span class="string">&amp;</span> <span class="string">hex</span></span><br><span class="line"><span class="string">https://post.zz173.com/posts/66c8.html</span></span><br><span class="line"></span><br><span class="line"><span class="string">crc16</span> <span class="string">&amp;</span> <span class="string">dec</span></span><br><span class="line"><span class="string">https://post.zz173.com/posts/65535.html</span></span><br><span class="line"></span><br><span class="line"><span class="string">crc32</span> <span class="string">&amp;</span> <span class="string">hex</span></span><br><span class="line"><span class="string">https://post.zz173.com/posts/8ddf18fb.html</span></span><br><span class="line"></span><br><span class="line"><span class="string">crc32</span> <span class="string">&amp;</span> <span class="string">dec</span></span><br><span class="line"><span class="string">https://post.zz173.com/posts/1690090958.html</span></span><br></pre></td></tr></table></figure>
+<h3 id="文章中的图片设置"><a href="#文章中的图片设置" class="headerlink" title="文章中的图片设置"></a>文章中的图片设置</h3>可以使用图床，也可以安装<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/asset-folders">官方的说明</a>，将图片存放在<code>public/images</code>文件中。俺便采用的官方的建议，将写好的md文件中的图片，复制到<code>public/images/img</code>中。但在使用的过程中发现执行<code>hexo clean</code>命令后，新建的<code>img</code>文件夹中的文件会消失？</li>
+</ol>
+<h2 id="参考连接"><a href="#参考连接" class="headerlink" title="参考连接"></a>参考连接</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/index.html">hexo官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/112318081">利用Hexo-abbrlink插件生成唯一文章链接</a></li>
+</ol>
+
   </div>
 </article>
 
@@ -174,7 +194,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E4%BF%A1%E6%81%AF"><span class="toc-number">2.</span> <span class="toc-text">环境信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cactus%E4%B8%BB%E9%A2%98%E5%AE%89%E8%A3%85"><span class="toc-number">3.</span> <span class="toc-text">cactus主题安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-number">4.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E9%93%BE%E6%8E%A5%E4%BC%98%E5%8C%96"><span class="toc-number">4.1.</span> <span class="toc-text">文章链接优化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E8%A6%81%E4%BB%8B%E7%BB%8D"><span class="toc-number">4.1.1.</span> <span class="toc-text">简要介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#abbrlink%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="toc-number">4.1.2.</span> <span class="toc-text">abbrlink插件安装与配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E4%B8%AD%E7%9A%84%E5%9B%BE%E7%89%87%E8%AE%BE%E7%BD%AE"><span class="toc-number">4.2.</span> <span class="toc-text">文章中的图片设置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5"><span class="toc-number">5.</span> <span class="toc-text">参考连接</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
@@ -280,6 +300,16 @@
 <!-- Google Analytics -->
 
 <!-- Baidu Analytics -->
+
+  <script type="text/javascript">
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?e6a2d6fbb89252b4cd25dfba29ade237";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
 
 <!-- Cloudflare Analytics -->
 
